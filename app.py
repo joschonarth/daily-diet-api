@@ -80,5 +80,20 @@ def get_meals():
 
     return jsonify(meal_list)
 
+@app.route('/api/meals/<int:meal_id>', methods=['GET'])
+def get_meal(meal_id):
+    meal = Meal.query.get(meal_id)
+    
+    if meal:
+        return jsonify({
+            "id": meal.id,
+            "name": meal.name,
+            "description": meal.description,
+            "date_time": meal.date_time,
+            "in_diet": meal.in_diet
+        })
+
+    return jsonify({"message": "Product not found"}), 404
+
 if __name__ == "__main__":
     app.run(debug=True)
