@@ -56,13 +56,29 @@ def update_meal(meal_id):
 @app.route('/api/meal/delete/<int:meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):
     meal = Meal.query.get(meal_id)
-    
+
     if meal:
         db.session.delete(meal)
         db.session.commit()
         return jsonify({"message": "Meal deleted successfully"}), 201
     
     return jsonify({"message": "Meal not found"}), 404
+
+@app.route('/api/meals', methods=['GET'])
+def get_meals():
+    meals = Meal.query.all()
+    meal_list = []
+    for meal in meals:
+        meal_data = {
+            "id": meal.id,
+            "name": meal.name,
+            "description": meal.description,
+            "date_time": meal.date_time,
+            "in_diet": meal.in_diet
+        }
+        meal_list.append(meal_data)
+
+    return jsonify(meal_list)
 
 if __name__ == "__main__":
     app.run(debug=True)
