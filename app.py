@@ -15,7 +15,8 @@ class Meal(db.Model):
     description = db.Column(db.Text, nullable=True)
     date_time = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     in_diet = db.Column(db.Boolean, nullable=False, default=True)
-
+    category = db.Column(db.String(50), nullable=True)
+    calories = db.Column(db.Float, nullable=True)
 
 @app.route('/api/meal/add', methods=['POST'])
 def add_meal():
