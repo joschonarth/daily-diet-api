@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Enum
 from flask_cors import CORS
 from datetime import datetime, timezone
+import enum
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///daily_diet.db'
@@ -9,22 +11,34 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///daily_diet.db'
 db = SQLAlchemy(app)
 CORS(app)
 
+class MealCategory(enum.Enum):
+    BREAKFAST = "Breakfast"
+    LUNCH = "Lunch"
+    DINNER = "Dinner"
+    SNACK = "Snack"
+    SALAD = "Salad"
+    DESSERT = "Dessert"
+
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     date_time = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     in_diet = db.Column(db.Boolean, nullable=False, default=True)
-    category = db.Column(db.String(50), nullable=True)
+    category = db.Column(Enum(MealCategory), nullable=True)
     calories = db.Column(db.Float, nullable=True)
 
 @app.route('/api/meal/add', methods=['POST'])
 def add_meal():
     data = request.json
+
+    if 'category' in data and data['category'] not in [e.value for e in MealCategory]:
+        return jsonify({"message": "Invalid category"}), 400
+    
     if 'name' in data:
         meal = Meal(
             name = data["name"],
-            description = data.get("description", ""),
+            description = data.get("description", None),
             in_diet = data.get("in_diet", True),
             category = data.get("category", None),
             calories = data.get("calories", None)
