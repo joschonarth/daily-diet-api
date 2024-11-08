@@ -23,9 +23,11 @@ def add_meal():
     data = request.json
     if 'name' in data:
         meal = Meal(
-            name=data["name"],
-            description=data.get("description", ""),
-            in_diet=data.get("in_diet", True)
+            name = data["name"],
+            description = data.get("description", ""),
+            in_diet = data.get("in_diet", True),
+            category = data.get("category", None),
+            calories = data.get("calories", None)
         )
         db.session.add(meal)
         db.session.commit()
