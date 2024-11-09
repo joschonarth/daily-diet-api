@@ -1,13 +1,11 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, jsonify, current_app
 from datetime import datetime, timedelta
 from app.models.models import Meal
 
 report_bp = Blueprint('report', __name__)
 
 @report_bp.route('/api/report', methods=['GET'])
-def generate_report():
-    report_type = 'weekly'
-      
+def generate_report():      
     end_date = datetime.now()
     
     start_date = end_date - timedelta(weeks=1)
