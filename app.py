@@ -89,7 +89,19 @@ def delete_meal(meal_id):
 
 @app.route('/api/meals', methods=['GET'])
 def get_meals():
-    meals = Meal.query.all()
+    category = request.args.get('category', None)
+    in_diet = request.args.get('in_diet', None)
+
+    query = Meal.query
+
+    if category:
+        query = query.filter(Meal.category == MealCategory[category.upper()])
+
+    if in_diet is not None:
+        in_diet_bool = in_diet.lower() == 'true'
+        query = query.filter(Meal.in_diet == in_diet_bool)
+
+    meals = query.all()
     meal_list = []
     for meal in meals:
         meal_data = {
