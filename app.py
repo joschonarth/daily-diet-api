@@ -12,12 +12,12 @@ db = SQLAlchemy(app)
 CORS(app)
 
 class MealCategory(enum.Enum):
-    BREAKFAST = "Breakfast"
-    LUNCH = "Lunch"
-    DINNER = "Dinner"
-    SNACK = "Snack"
-    SALAD = "Salad"
-    DESSERT = "Dessert"
+    BREAKFAST = "BREAKFAST"
+    LUNCH = "LUNCH"
+    DINNER = "DINNER"
+    SNACK = "SNACK"
+    SALAD = "SALAD"
+    DESSERT = "DESSERT"
 
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -65,6 +65,12 @@ def update_meal(meal_id):
         meal.date_time = data['date_time']
     if 'in_diet' in data:
         meal.in_diet = data['in_diet']
+    if 'category' in data:
+        if data['category'] not in [e.value for e in MealCategory]:
+            return jsonify({"message": "Invalid category"}), 400
+        meal.category = MealCategory(data['category'])
+    if 'calories' in data:
+        meal.calories = data['calories']
     
     db.session.commit()
 
