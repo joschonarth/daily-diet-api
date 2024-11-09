@@ -21,3 +21,4 @@ class Meal(db.Model):
     in_diet = db.Column(db.Boolean, nullable=False, default=True)
     category = db.Column(Enum(MealCategory), nullable=True)
     calories = db.Column(db.Float, nullable=True)
+    favorite = db.Column(db.Boolean, default=False)

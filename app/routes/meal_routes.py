@@ -86,7 +86,8 @@ def get_meals():
             "date_time": meal.date_time,
             "in_diet": meal.in_diet,
             "category": meal.category.value if meal.category else None,
-            "calories": meal.calories
+            "calories": meal.calories,
+            "favorite": meal.favorite
         }
         meal_list.append(meal_data)
 
@@ -104,7 +105,24 @@ def get_meal(meal_id):
             "date_time": meal.date_time,
             "in_diet": meal.in_diet,
             "category": meal.category.value if meal.category else None,
-            "calories": meal.calories
+            "calories": meal.calories,
+            "favorite": meal.favorite
         })
 
     return jsonify({"message": "Product not found"}), 404
+
+@meal_bp.route('/api/meals/<int:meal_id>/favorite', methods=['PATCH'])
+def toggle_favorite(meal_id):
+    meal = Meal.query.get(meal_id)
+    
+    if not meal:
+        return jsonify({"message": "Meal not found."}), 404
+    
+    meal.favorite = not meal.favorite
+    db.session.commit()
+    
+    return jsonify({
+        "message": "Meal favorite status updated successfully.",
+        "meal_id": meal.id,
+        "favorite": meal.favorite
+    })
