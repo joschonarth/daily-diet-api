@@ -116,13 +116,30 @@ def toggle_favorite(meal_id):
     meal = Meal.query.get(meal_id)
     
     if not meal:
-        return jsonify({"message": "Meal not found."}), 404
+        return jsonify({"message": "Meal not found"}), 404
     
     meal.favorite = not meal.favorite
     db.session.commit()
     
     return jsonify({
-        "message": "Meal favorite status updated successfully.",
+        "message": "Meal favorite status updated successfully",
         "meal_id": meal.id,
         "favorite": meal.favorite
     })
+
+@meal_bp.route('/api/meals/favorites', methods=['GET'])
+def get_favorite_meals():
+    favorite_meals = Meal.query.filter_by(favorite=True).all()
+    
+    if not favorite_meals:
+        return jsonify({"message": "No favorite meals found"}), 404
+    
+    meals_list = [{
+        "id": meal.id,
+        "name": meal.name,
+        "calories": meal.calories,
+        "date_time": meal.date_time,
+        "in_diet": meal.in_diet
+    } for meal in favorite_meals]
+    
+    return jsonify({"favorite_meals": meals_list})
