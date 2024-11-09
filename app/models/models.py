@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timezone
-from sqlalchemy import Enum
+from sqlalchemy import Enum, func
 import enum
 
 db = SQLAlchemy()
@@ -17,7 +16,7 @@ class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    date_time = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
+    date_time = db.Column(db.DateTime, nullable=False, default=func.now())
     in_diet = db.Column(db.Boolean, nullable=False, default=True)
     category = db.Column(Enum(MealCategory), nullable=True)
     calories = db.Column(db.Float, nullable=True)
