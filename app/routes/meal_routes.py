@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, Meal, MealCategory
 from datetime import datetime
+from sqlalchemy import and_
 
 meal_bp = Blueprint('meal_bp', __name__)
 
@@ -67,6 +68,7 @@ def delete_meal(meal_id):
 def get_meals():
     category = request.args.get('category', None)
     in_diet = request.args.get('in_diet', None)
+    date_filter = request.args.get('date', None)
     start_date_str = request.args.get('start_date', None)
     end_date_str = request.args.get('end_date', None)
 
@@ -78,6 +80,12 @@ def get_meals():
     if in_diet is not None:
         in_diet_bool = in_diet.lower() == 'true'
         query = query.filter(Meal.in_diet == in_diet_bool)
+
+    if date_filter == "today":
+        today = datetime.now().date()
+        start_of_day = datetime.combine(today, datetime.min.time())
+        end_of_day = datetime.combine(today, datetime.max.time())
+        query = query.filter(and_(Meal.date_time >= start_of_day, Meal.date_time <= end_of_day))
     
     if start_date_str:
         try:
