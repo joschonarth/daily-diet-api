@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, current_app
+from flask import Blueprint, jsonify, current_app, request
 from datetime import datetime, timedelta
 from app.models.models import Meal
 
@@ -16,7 +16,7 @@ def generate_report():
     meals = Meal.query.filter(Meal.date_time >= start_date, Meal.date_time <= end_date).all()
     
     if not meals:
-        return jsonify({"message": "No meals found in the selected date range."}), 404
+        return jsonify({"message": "No meals found in the selected date range"}), 404
 
     meals_in_diet = sum(1 for meal in meals if meal.in_diet)
     meals_out_of_diet = len(meals) - meals_in_diet
@@ -26,7 +26,7 @@ def generate_report():
     calorie_goal = current_app.config['CALORIE_GOAL']
     
     if calorie_goal is None or calorie_goal == 0:
-        return jsonify({"message": "Calorie goal is not set or is invalid."}), 400
+        return jsonify({"message": "Calorie goal is not set or is invalid"}), 400
     
     progress = (total_calories / calorie_goal) * 100
     
@@ -41,3 +41,15 @@ def generate_report():
     }
 
     return jsonify(report)
+
+@report_bp.route('/api/report/goal', methods=['PUT'])
+def update_calorie_goal():
+    data = request.get_json()
+    new_goal = data.get('calorie_goal')
+
+    if not new_goal or not isinstance(new_goal, (int, float)) or new_goal <= 0:
+        return jsonify({"message": "Invalid calorie goal. It must be a positive number"}), 400
+
+    current_app.config['CALORIE_GOAL'] = new_goal
+ 
+    return jsonify({"message": f"Calorie goal successfully updated to {new_goal}"}), 200
