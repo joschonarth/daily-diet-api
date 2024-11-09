@@ -1,34 +1,9 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Enum
-from flask_cors import CORS
-from datetime import datetime, timezone
-import enum
+from flask import Blueprint, request, jsonify
+from app.models.models import db, Meal, MealCategory
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///daily_diet.db'
+meal_bp = Blueprint('meal_bp', __name__)
 
-db = SQLAlchemy(app)
-CORS(app)
-
-class MealCategory(enum.Enum):
-    BREAKFAST = "BREAKFAST"
-    LUNCH = "LUNCH"
-    DINNER = "DINNER"
-    SNACK = "SNACK"
-    SALAD = "SALAD"
-    DESSERT = "DESSERT"
-
-class Meal(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True)
-    date_time = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
-    in_diet = db.Column(db.Boolean, nullable=False, default=True)
-    category = db.Column(Enum(MealCategory), nullable=True)
-    calories = db.Column(db.Float, nullable=True)
-
-@app.route('/api/meal/add', methods=['POST'])
+@meal_bp.route('/api/meal/add', methods=['POST'])
 def add_meal():
     data = request.json
 
@@ -49,7 +24,7 @@ def add_meal():
     return jsonify({"message": "Invalid meal data"}), 400
 
 
-@app.route('/api/meal/update/<int:meal_id>', methods=['PUT'])
+@meal_bp.route('/api/meal/update/<int:meal_id>', methods=['PUT'])
 def update_meal(meal_id):
     meal = Meal.query.get(meal_id)
     if not meal:
@@ -76,7 +51,7 @@ def update_meal(meal_id):
 
     return jsonify({"message": "Meal updated successfully"})
 
-@app.route('/api/meal/delete/<int:meal_id>', methods=['DELETE'])
+@meal_bp.route('/api/meal/delete/<int:meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):
     meal = Meal.query.get(meal_id)
 
@@ -87,7 +62,7 @@ def delete_meal(meal_id):
     
     return jsonify({"message": "Meal not found"}), 404
 
-@app.route('/api/meals', methods=['GET'])
+@meal_bp.route('/api/meals', methods=['GET'])
 def get_meals():
     category = request.args.get('category', None)
     in_diet = request.args.get('in_diet', None)
@@ -117,7 +92,7 @@ def get_meals():
 
     return jsonify(meal_list)
 
-@app.route('/api/meals/<int:meal_id>', methods=['GET'])
+@meal_bp.route('/api/meals/<int:meal_id>', methods=['GET'])
 def get_meal(meal_id):
     meal = Meal.query.get(meal_id)
     
@@ -133,6 +108,3 @@ def get_meal(meal_id):
         })
 
     return jsonify({"message": "Product not found"}), 404
-
-if __name__ == "__main__":
-    app.run(debug=True)
