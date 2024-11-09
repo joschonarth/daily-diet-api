@@ -97,7 +97,9 @@ def get_meals():
             "name": meal.name,
             "description": meal.description,
             "date_time": meal.date_time,
-            "in_diet": meal.in_diet
+            "in_diet": meal.in_diet,
+            "category": meal.category.value if meal.category else None,
+            "calories": meal.calories
         }
         meal_list.append(meal_data)
 
@@ -113,7 +115,9 @@ def get_meal(meal_id):
             "name": meal.name,
             "description": meal.description,
             "date_time": meal.date_time,
-            "in_diet": meal.in_diet
+            "in_diet": meal.in_diet,
+            "category": meal.category.value if meal.category else None,
+            "calories": meal.calories
         })
 
     return jsonify({"message": "Product not found"}), 404
