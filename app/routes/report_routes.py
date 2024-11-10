@@ -8,11 +8,21 @@ report_bp = Blueprint('report', __name__)
 def generate_report():      
     end_date = datetime.now()
     
-    start_date = end_date - timedelta(weeks=1)
+    period = request.args.get('period', 'week').lower()
 
-    start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0)
-    end_date = end_date.replace(hour=23, minute=59, second=59, microsecond=999999)
+    if period == 'day':
+        start_date = datetime.combine(end_date.date(), datetime.min.time())
+    elif period == 'week':
+        start_date = (end_date - timedelta(weeks=1)).date()
+        start_date = datetime.combine(start_date, datetime.min.time())
+    elif period == 'month':
+        start_date = (end_date - timedelta(days=30)).date()
+        start_date = datetime.combine(start_date, datetime.min.time())
+    else:
+        return jsonify({"message": "Invalid range parameter"}), 400
     
+    end_date = datetime.combine(end_date.date(), datetime.max.time())
+
     meals = Meal.query.filter(Meal.date_time >= start_date, Meal.date_time <= end_date).all()
     
     if not meals:
@@ -28,6 +38,11 @@ def generate_report():
     if calorie_goal is None or calorie_goal == 0:
         return jsonify({"message": "Calorie goal is not set or is invalid"}), 400
     
+    if period == 'week':
+        calorie_goal *= 7
+    elif period == 'month':
+        calorie_goal *= 30
+
     progress = (total_calories / calorie_goal) * 100
     
     report = {

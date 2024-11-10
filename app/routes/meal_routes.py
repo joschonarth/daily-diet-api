@@ -81,20 +81,20 @@ def get_meals():
         in_diet_bool = in_diet.lower() == 'true'
         query = query.filter(Meal.in_diet == in_diet_bool)
 
-    if date_filter == "today":
+    if date_filter == 'day':
         today = datetime.now().date()
         start_of_day = datetime.combine(today, datetime.min.time())
         end_of_day = datetime.combine(today, datetime.max.time())
         query = query.filter(and_(Meal.date_time >= start_of_day, Meal.date_time <= end_of_day))
     
-    elif date_filter == "week":
+    elif date_filter == 'week':
         today = datetime.now().date()
         start_of_week = today - timedelta(days=today.weekday())
         end_of_week = start_of_week + timedelta(days=6)
         query = query.filter(and_(Meal.date_time >= datetime.combine(start_of_week, datetime.min.time()), 
                                   Meal.date_time <= datetime.combine(end_of_week, datetime.max.time())))
     
-    elif date_filter == "month":
+    elif date_filter == 'month':
         today = datetime.now().date()
         start_of_month = today.replace(day=1)
         next_month = today.replace(day=28) + timedelta(days=4)
