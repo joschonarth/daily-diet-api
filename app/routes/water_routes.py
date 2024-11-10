@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, Water
+from datetime import datetime, timedelta
+from calendar import monthrange
 
 water_bp = Blueprint('water_bp', __name__)
 
@@ -33,3 +35,30 @@ def remove_water_intake(id):
     db.session.commit()
 
     return jsonify({"message": "Water intake removed successfully"}), 200
+
+@water_bp.route('/api/water', methods=['GET'])
+def get_water_intake():
+    period = request.args.get('period', 'day')
+
+    today = datetime.now()
+
+    if period == 'day':
+        start_date = datetime.combine(today.date(), datetime.min.time())
+        end_date = datetime.combine(today.date(), datetime.max.time())
+    elif period == 'week':
+        start_of_week = today - timedelta(days=today.weekday() + 1)
+        start_date = datetime.combine(start_of_week.date(), datetime.min.time())
+        end_of_week = start_of_week + timedelta(days=6)
+        end_date = datetime.combine(end_of_week.date(), datetime.max.time())
+    elif period == 'month':
+        start_date = datetime.combine(today.replace(day=1).date(), datetime.min.time())
+        last_day = monthrange(today.year, today.month)[1]
+        end_date = datetime.combine(today.replace(day=last_day).date(), datetime.max.time())
+    else:
+        return jsonify({"message": "Invalid period"}), 400
+
+    water_intakes = Water.query.filter(Water.date_time >= start_date, Water.date_time <= end_date).all()
+
+    history = [{"id": intake.id, "quantity": intake.quantity, "date_time": intake.date_time.strftime('%Y-%m-%d %H:%M:%S')} for intake in water_intakes]
+
+    return jsonify(history)
