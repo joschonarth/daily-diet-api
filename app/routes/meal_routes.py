@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, Meal, MealCategory
-from datetime import datetime
+from datetime import datetime, timedelta
 from sqlalchemy import and_
 
 meal_bp = Blueprint('meal_bp', __name__)
@@ -87,6 +87,13 @@ def get_meals():
         end_of_day = datetime.combine(today, datetime.max.time())
         query = query.filter(and_(Meal.date_time >= start_of_day, Meal.date_time <= end_of_day))
     
+    elif date_filter == "week":
+        today = datetime.now().date()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=6)
+        query = query.filter(and_(Meal.date_time >= datetime.combine(start_of_week, datetime.min.time()), 
+                                  Meal.date_time <= datetime.combine(end_of_week, datetime.max.time())))
+        
     if start_date_str:
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
