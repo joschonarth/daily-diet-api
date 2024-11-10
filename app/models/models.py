@@ -12,6 +12,9 @@ class MealCategory(enum.Enum):
     SALAD = "SALAD"
     DESSERT = "DESSERT"
 
+class Goals():
+    DAILY_CALORIE_GOAL = 2000
+
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
