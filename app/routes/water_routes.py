@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.models.models import db, Water
 from datetime import datetime, timedelta
 from calendar import monthrange
+from app.models.models import Meal, Goals
 
 water_bp = Blueprint('water_bp', __name__)
 
@@ -70,3 +71,34 @@ def get_water_intake():
     history = [{"id": intake.id, "quantity": intake.quantity, "date_time": intake.date_time.strftime('%Y-%m-%d %H:%M:%S')} for intake in water_intakes]
 
     return jsonify(history)
+
+@water_bp.route('/api/water/total', methods=['GET'])
+def get_total_water_intake():
+    period = request.args.get('period', 'day')
+    
+    try:
+        start_date, end_date = get_date_range(period)
+    except ValueError:
+        return jsonify({"message": "Invalid period"}), 400
+
+    total_water = db.session.query(db.func.sum(Water.quantity)).filter(
+        Water.date_time >= start_date,
+        Water.date_time <= end_date
+    ).scalar() or 0
+
+    water_goal = Goals.DAILY_WATER_GOAL
+
+    if period == 'week':
+        water_goal *= 7
+    elif period == 'month':
+        days_in_month = monthrange(end_date.year, end_date.month)[1]  # Número de dias no mês atual
+        water_goal *= days_in_month
+
+    progress = (total_water / water_goal) * 100
+
+    return jsonify({
+        "period": period,
+        "total_water": total_water if total_water else 0,
+        "water_goal": water_goal,
+        "progress": round(progress, 2)
+    })
