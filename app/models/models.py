@@ -14,6 +14,7 @@ class MealCategory(enum.Enum):
 
 class Goals():
     DAILY_CALORIE_GOAL = 2000
+    DAILY_WATER_GOAL = 2000
 
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -24,3 +25,7 @@ class Meal(db.Model):
     category = db.Column(Enum(MealCategory), nullable=True)
     calories = db.Column(db.Float, nullable=True)
     favorite = db.Column(db.Boolean, default=False)
+
+class Water(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date_time = db.Column(db.DateTime, nullable=False, default=func.now())
