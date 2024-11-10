@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, Water
-from datetime import datetime
 
 water_bp = Blueprint('water_bp', __name__)
 
@@ -23,3 +22,14 @@ def add_water_intake():
         "quantity": water_intake.quantity,
         "date_time": water_intake.date_time.strftime('%Y-%m-%d %H:%M:%S')
     }), 201
+
+@water_bp.route('/api/water/delete/<int:id>', methods=['DELETE'])
+def remove_water_intake(id):
+    water_intake = Water.query.get(id)
+    if not water_intake:
+        return jsonify({"message": "Water intake not found"}), 404
+
+    db.session.delete(water_intake)
+    db.session.commit()
+
+    return jsonify({"message": "Water intake removed successfully"}), 200
