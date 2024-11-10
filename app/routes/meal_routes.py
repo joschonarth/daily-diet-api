@@ -93,7 +93,16 @@ def get_meals():
         end_of_week = start_of_week + timedelta(days=6)
         query = query.filter(and_(Meal.date_time >= datetime.combine(start_of_week, datetime.min.time()), 
                                   Meal.date_time <= datetime.combine(end_of_week, datetime.max.time())))
-        
+    
+    elif date_filter == "month":
+        today = datetime.now().date()
+        start_of_month = today.replace(day=1)
+        next_month = today.replace(day=28) + timedelta(days=4)
+        start_of_next_month = next_month.replace(day=1)
+        end_of_month = start_of_next_month - timedelta(seconds=1)
+        query = query.filter(and_(Meal.date_time >= datetime.combine(start_of_month, datetime.min.time()), 
+                                  Meal.date_time <= datetime.combine(end_of_month, datetime.max.time())))
+
     if start_date_str:
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
