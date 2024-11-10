@@ -25,7 +25,6 @@ def add_meal():
         return jsonify({"message": "Meal added successfully"}), 201
     return jsonify({"message": "Invalid meal data"}), 400
 
-
 @meal_bp.route('/api/meal/update/<int:meal_id>', methods=['PUT'])
 def update_meal(meal_id):
     meal = Meal.query.get(meal_id)

@@ -28,4 +28,5 @@ class Meal(db.Model):
 
 class Water(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.Float, nullable=False)
     date_time = db.Column(db.DateTime, nullable=False, default=func.now())
