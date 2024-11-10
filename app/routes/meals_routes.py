@@ -67,7 +67,7 @@ def delete_meal(meal_id):
 def get_meals():
     category = request.args.get('category', None)
     in_diet = request.args.get('in_diet', None)
-    date_filter = request.args.get('date', None)
+    date_filter = request.args.get('period', None)
     start_date_str = request.args.get('start_date', None)
     end_date_str = request.args.get('end_date', None)
 

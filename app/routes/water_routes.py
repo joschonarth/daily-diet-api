@@ -91,7 +91,7 @@ def get_total_water_intake():
     if period == 'week':
         water_goal *= 7
     elif period == 'month':
-        days_in_month = monthrange(end_date.year, end_date.month)[1]  # Número de dias no mês atual
+        days_in_month = monthrange(end_date.year, end_date.month)[1]
         water_goal *= days_in_month
 
     progress = (total_water / water_goal) * 100
