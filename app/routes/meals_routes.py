@@ -3,9 +3,9 @@ from app.models.models import db, Meal, MealCategory
 from datetime import datetime, timedelta
 from sqlalchemy import and_
 
-meal_bp = Blueprint('meal_bp', __name__)
+meals_bp = Blueprint('meals_bp', __name__)
 
-@meal_bp.route('/api/meal/add', methods=['POST'])
+@meals_bp.route('/api/meals/add', methods=['POST'])
 def add_meal():
     data = request.json
 
@@ -25,7 +25,7 @@ def add_meal():
         return jsonify({"message": "Meal added successfully"}), 201
     return jsonify({"message": "Invalid meal data"}), 400
 
-@meal_bp.route('/api/meal/update/<int:meal_id>', methods=['PUT'])
+@meals_bp.route('/api/meals/update/<int:meal_id>', methods=['PUT'])
 def update_meal(meal_id):
     meal = Meal.query.get(meal_id)
     if not meal:
@@ -52,7 +52,7 @@ def update_meal(meal_id):
 
     return jsonify({"message": "Meal updated successfully"})
 
-@meal_bp.route('/api/meal/delete/<int:meal_id>', methods=['DELETE'])
+@meals_bp.route('/api/meals/delete/<int:meal_id>', methods=['DELETE'])
 def delete_meal(meal_id):
     meal = Meal.query.get(meal_id)
 
@@ -63,7 +63,7 @@ def delete_meal(meal_id):
     
     return jsonify({"message": "Meal not found"}), 404
 
-@meal_bp.route('/api/meals', methods=['GET'])
+@meals_bp.route('/api/meals', methods=['GET'])
 def get_meals():
     category = request.args.get('category', None)
     in_diet = request.args.get('in_diet', None)
@@ -134,7 +134,7 @@ def get_meals():
 
     return jsonify(meal_list)
 
-@meal_bp.route('/api/meals/<int:meal_id>', methods=['GET'])
+@meals_bp.route('/api/meals/<int:meal_id>', methods=['GET'])
 def get_meal(meal_id):
     meal = Meal.query.get(meal_id)
     
@@ -152,7 +152,7 @@ def get_meal(meal_id):
 
     return jsonify({"message": "Product not found"}), 404
 
-@meal_bp.route('/api/meals/<int:meal_id>/favorite', methods=['PATCH'])
+@meals_bp.route('/api/meals/<int:meal_id>/favorite', methods=['PATCH'])
 def toggle_favorite(meal_id):
     meal = Meal.query.get(meal_id)
     
@@ -168,7 +168,7 @@ def toggle_favorite(meal_id):
         "favorite": meal.favorite
     })
 
-@meal_bp.route('/api/meals/favorites', methods=['GET'])
+@meals_bp.route('/api/meals/favorites', methods=['GET'])
 def get_favorite_meals():
     favorite_meals = Meal.query.filter_by(favorite=True).all()
     

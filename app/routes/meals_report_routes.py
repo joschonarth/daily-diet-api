@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from app.models.models import Meal, Goals
 from calendar import monthrange
 
-report_bp = Blueprint('report', __name__)
+meals_report_bp = Blueprint('meals_report', __name__)
 
-@report_bp.route('/api/report', methods=['GET'])
+@meals_report_bp.route('/api/meals/report', methods=['GET'])
 def generate_report():      
     today  = datetime.now()
     
@@ -62,7 +62,7 @@ def generate_report():
 
     return jsonify(report)
 
-@report_bp.route('/api/report/goal', methods=['PUT'])
+@meals_report_bp.route('/api/meals/report/goal', methods=['PUT'])
 def update_calorie_goal():
     data = request.get_json()
     new_goal = data.get('daily_calorie_goal')

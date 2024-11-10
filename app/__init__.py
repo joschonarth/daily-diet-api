@@ -12,11 +12,11 @@ def create_app():
     return app
 
 def register_blueprints(app):
-    from app.routes.meal_routes import meal_bp
-    app.register_blueprint(meal_bp)
+    from app.routes.meals_routes import meals_bp
+    app.register_blueprint(meals_bp)
 
-    from app.routes.report_routes import report_bp
-    app.register_blueprint(report_bp)
+    from app.routes.meals_report_routes import meals_report_bp
+    app.register_blueprint(meals_report_bp)
 
     from app.routes.water_routes import water_bp
     app.register_blueprint(water_bp)
