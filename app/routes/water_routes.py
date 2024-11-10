@@ -102,3 +102,15 @@ def get_total_water_intake():
         "water_goal": water_goal,
         "progress": round(progress, 2)
     })
+
+@water_bp.route('/api/water/goal', methods=['PUT'])
+def update_water_goal():
+    data = request.get_json()
+    new_goal = data.get('daily_water_goal')
+
+    if not new_goal or not isinstance(new_goal, (int, float)) or new_goal <= 0:
+        return jsonify({"message": "Invalid calorie goal"}), 400
+
+    Goals.DAILY_WATER_GOAL = new_goal
+
+    return jsonify({"message": f"Daily calorie goal successfully updated to {new_goal}"}), 200
