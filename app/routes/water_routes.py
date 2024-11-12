@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.models.models import db, Water
 from datetime import datetime, timedelta
 from calendar import monthrange
-from app.models.models import Meal, Goals
+from app.models.models import Goals
 
 water_bp = Blueprint('water_bp', __name__)
 
