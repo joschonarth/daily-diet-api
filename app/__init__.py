@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_login import LoginManager
 from app.models.models import db, User
@@ -25,6 +25,10 @@ def create_app():
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    return jsonify({"message": "You need to be logged in to access this route"}), 401
 
 def register_blueprints(app):
     from app.routes.meals_routes import meals_bp

@@ -1,11 +1,13 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from app.models.models import db, Meal, MealCategory
 from datetime import datetime, timedelta
 from sqlalchemy import and_
+from flask_login import login_required, current_user
 
 meals_bp = Blueprint('meals_bp', __name__)
 
 @meals_bp.route('/api/meals/add', methods=['POST'])
+@login_required
 def add_meal():
     data = request.json
 
@@ -18,7 +20,8 @@ def add_meal():
             description = data.get("description", None),
             in_diet = data.get("in_diet", True),
             category = data.get("category", None),
-            calories = data.get("calories", None)
+            calories = data.get("calories", None),
+            user_id=current_user.id
         )
         db.session.add(meal)
         db.session.commit()
@@ -26,8 +29,9 @@ def add_meal():
     return jsonify({"message": "Invalid meal data"}), 400
 
 @meals_bp.route('/api/meals/update/<int:meal_id>', methods=['PUT'])
+@login_required
 def update_meal(meal_id):
-    meal = Meal.query.get(meal_id)
+    meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
     if not meal:
         return jsonify({"message": "Meal not found"}), 404
 
@@ -53,8 +57,9 @@ def update_meal(meal_id):
     return jsonify({"message": "Meal updated successfully"})
 
 @meals_bp.route('/api/meals/delete/<int:meal_id>', methods=['DELETE'])
+@login_required
 def delete_meal(meal_id):
-    meal = Meal.query.get(meal_id)
+    meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
 
     if meal:
         db.session.delete(meal)
@@ -64,6 +69,7 @@ def delete_meal(meal_id):
     return jsonify({"message": "Meal not found"}), 404
 
 @meals_bp.route('/api/meals', methods=['GET'])
+@login_required
 def get_meals():
     category = request.args.get('category', None)
     in_diet = request.args.get('in_diet', None)
@@ -71,7 +77,7 @@ def get_meals():
     start_date_str = request.args.get('start_date', None)
     end_date_str = request.args.get('end_date', None)
 
-    query = Meal.query
+    query = Meal.query.filter_by(user_id=current_user.id)
 
     if category:
         query = query.filter(Meal.category == MealCategory[category.upper()])
@@ -135,9 +141,10 @@ def get_meals():
     return jsonify(meal_list)
 
 @meals_bp.route('/api/meals/<int:meal_id>', methods=['GET'])
+@login_required
 def get_meal(meal_id):
-    meal = Meal.query.get(meal_id)
-    
+    meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
+ 
     if meal:
         return jsonify({
             "id": meal.id,
@@ -153,8 +160,9 @@ def get_meal(meal_id):
     return jsonify({"message": "Product not found"}), 404
 
 @meals_bp.route('/api/meals/<int:meal_id>/favorite', methods=['PATCH'])
+@login_required
 def toggle_favorite(meal_id):
-    meal = Meal.query.get(meal_id)
+    meal = Meal.query.filter_by(id=meal_id, user_id=current_user.id).first()
     
     if not meal:
         return jsonify({"message": "Meal not found"}), 404
@@ -169,8 +177,9 @@ def toggle_favorite(meal_id):
     })
 
 @meals_bp.route('/api/meals/favorites', methods=['GET'])
+@login_required
 def get_favorite_meals():
-    favorite_meals = Meal.query.filter_by(favorite=True).all()
+    favorite_meals = Meal.query.filter_by(favorite=True, user_id=current_user.id).all()
     
     if not favorite_meals:
         return jsonify({"message": "No favorite meals found"}), 404

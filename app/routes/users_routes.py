@@ -36,8 +36,11 @@ def login():
 
         if user and bcrypt.checkpw(str.encode(password), user.password):
             login_user(user)
-            print(current_user.is_authenticated)
-            return jsonify({"message": "Login successful"})
+
+            if current_user.is_authenticated:
+                return jsonify({"message": "Login successful", "user_id": current_user.id})
+            else:
+                return jsonify({"message": "Failed to authenticate user"}), 500
     
     return jsonify({"message": "Invalid credentials"}), 400
 
