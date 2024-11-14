@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify
 from app.models.models import db, Water
 from datetime import datetime, timedelta
 from calendar import monthrange
-from app.models.models import Goals
 from flask_login import login_required, current_user
 
 water_bp = Blueprint('water_bp', __name__)
@@ -97,7 +96,7 @@ def get_total_water_intake():
         Water.date_time <= end_date
     ).scalar() or 0
 
-    water_goal = Goals.DAILY_WATER_GOAL
+    water_goal = current_user.daily_water_goal
 
     if period == 'week':
         water_goal *= 7
@@ -121,8 +120,9 @@ def update_water_goal():
     new_goal = data.get('daily_water_goal')
 
     if not new_goal or not isinstance(new_goal, (int, float)) or new_goal <= 0:
-        return jsonify({"message": "Invalid calorie goal"}), 400
+        return jsonify({"message": "Invalid water intake goal"}), 400
 
-    Goals.DAILY_WATER_GOAL = new_goal
+    current_user.daily_water_goal = new_goal
+    db.session.commit()
 
-    return jsonify({"message": f"Daily calorie goal successfully updated to {new_goal}"}), 200
+    return jsonify({"message": f"Daily water intake goal successfully updated to {new_goal}"}), 200

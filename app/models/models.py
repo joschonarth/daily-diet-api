@@ -25,6 +25,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     meals = relationship('Meal', backref='user', cascade="all, delete")
     water_intakes = relationship('Water', backref='user', cascade="all, delete")
+    daily_calorie_goal = db.Column(db.Float, nullable=False, default=Goals.DAILY_CALORIE_GOAL)
+    daily_water_goal = db.Column(db.Float, nullable=False, default=Goals.DAILY_WATER_GOAL)
 
 class Meal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
