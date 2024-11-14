@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, User
 import bcrypt
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, login_required, logout_user
 
 users_bp = Blueprint('users_bp', __name__)
 
@@ -40,3 +40,9 @@ def login():
             return jsonify({"message": "Login successful"})
     
     return jsonify({"message": "Invalid credentials"}), 400
+
+@users_bp.route("/api/users/logout", methods=['GET'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message": "Logout successful"})
