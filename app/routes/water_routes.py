@@ -3,6 +3,7 @@ from app.models.models import db, Water
 from datetime import datetime, timedelta
 from calendar import monthrange
 from app.models.models import Goals
+from flask_login import login_required, current_user
 
 water_bp = Blueprint('water_bp', __name__)
 
@@ -27,6 +28,7 @@ def get_date_range(period):
     return start_date, end_date
 
 @water_bp.route('/api/water/add', methods=['POST'])
+@login_required
 def add_water_intake():
     data = request.json
 
@@ -34,7 +36,8 @@ def add_water_intake():
         return jsonify({"message": "Invalid quantity"}), 400
 
     water_intake = Water(
-        quantity=data['quantity']
+        quantity=data['quantity'],
+        user_id=current_user.id
     )
     
     db.session.add(water_intake)
@@ -47,8 +50,9 @@ def add_water_intake():
     }), 201
 
 @water_bp.route('/api/water/delete/<int:id>', methods=['DELETE'])
+@login_required
 def remove_water_intake(id):
-    water_intake = Water.query.get(id)
+    water_intake = Water.query.filter_by(id=id, user_id=current_user.id).first()
     if not water_intake:
         return jsonify({"message": "Water intake not found"}), 404
 
@@ -58,6 +62,7 @@ def remove_water_intake(id):
     return jsonify({"message": "Water intake removed successfully"}), 200
 
 @water_bp.route('/api/water', methods=['GET'])
+@login_required
 def get_water_intake():
     period = request.args.get('period', 'day')
 
@@ -66,13 +71,18 @@ def get_water_intake():
     except ValueError:
         return jsonify({"message": "Invalid period"}), 400
 
-    water_intakes = Water.query.filter(Water.date_time >= start_date, Water.date_time <= end_date).all()
+    water_intakes = Water.query.filter(
+        Water.user_id == current_user.id,
+        Water.date_time >= start_date,
+        Water.date_time <= end_date
+    ).all()
 
     history = [{"id": intake.id, "quantity": intake.quantity, "date_time": intake.date_time.strftime('%Y-%m-%d %H:%M:%S')} for intake in water_intakes]
 
     return jsonify(history)
 
 @water_bp.route('/api/water/total', methods=['GET'])
+@login_required
 def get_total_water_intake():
     period = request.args.get('period', 'day')
     
@@ -82,6 +92,7 @@ def get_total_water_intake():
         return jsonify({"message": "Invalid period"}), 400
 
     total_water = db.session.query(db.func.sum(Water.quantity)).filter(
+        Water.user_id == current_user.id,
         Water.date_time >= start_date,
         Water.date_time <= end_date
     ).scalar() or 0
@@ -104,6 +115,7 @@ def get_total_water_intake():
     })
 
 @water_bp.route('/api/water/goal', methods=['PUT'])
+@login_required
 def update_water_goal():
     data = request.get_json()
     new_goal = data.get('daily_water_goal')

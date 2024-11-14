@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from app.models.models import db, Meal, MealCategory
 from datetime import datetime, timedelta
 from sqlalchemy import and_
