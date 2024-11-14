@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum, func, ForeignKey
 from sqlalchemy.orm import backref, relationship
 import enum
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -17,7 +18,7 @@ class Goals():
     DAILY_CALORIE_GOAL = 2000
     DAILY_WATER_GOAL = 2000
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)

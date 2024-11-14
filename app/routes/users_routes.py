@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, User
 import bcrypt
+from flask_login import login_user, current_user
 
 users_bp = Blueprint('users_bp', __name__)
 
@@ -21,5 +22,21 @@ def create_user():
         db.session.add(user)
         db.session.commit()
         return jsonify({"message": "User successfully registered"})
+    
+    return jsonify({"message": "Invalid credentials"}), 400
+
+@users_bp.route("/api/users/login", methods=['POST'])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    if email and password:
+        user = User.query.filter_by(email=email).first()
+
+        if user and bcrypt.checkpw(str.encode(password), user.password):
+            login_user(user)
+            print(current_user.is_authenticated)
+            return jsonify({"message": "Login successful"})
     
     return jsonify({"message": "Invalid credentials"}), 400
