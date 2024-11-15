@@ -73,7 +73,7 @@ def delete_meal(meal_id):
 def get_meals():
     category = request.args.get('category', None)
     in_diet = request.args.get('in_diet', None)
-    date_filter = request.args.get('period', None)
+    period = request.args.get('period', None)
     start_date_str = request.args.get('start_date', None)
     end_date_str = request.args.get('end_date', None)
 
@@ -86,20 +86,20 @@ def get_meals():
         in_diet_bool = in_diet.lower() == 'true'
         query = query.filter(Meal.in_diet == in_diet_bool)
 
-    if date_filter == 'day':
+    if period == 'day':
         today = datetime.now().date()
         start_of_day = datetime.combine(today, datetime.min.time())
         end_of_day = datetime.combine(today, datetime.max.time())
         query = query.filter(and_(Meal.date_time >= start_of_day, Meal.date_time <= end_of_day))
     
-    elif date_filter == 'week':
+    elif period == 'week':
         today = datetime.now().date()
         start_of_week = today - timedelta(days=today.weekday())
         end_of_week = start_of_week + timedelta(days=6)
         query = query.filter(and_(Meal.date_time >= datetime.combine(start_of_week, datetime.min.time()), 
                                   Meal.date_time <= datetime.combine(end_of_week, datetime.max.time())))
     
-    elif date_filter == 'month':
+    elif period == 'month':
         today = datetime.now().date()
         start_of_month = today.replace(day=1)
         next_month = today.replace(day=28) + timedelta(days=4)

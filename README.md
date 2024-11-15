@@ -80,7 +80,7 @@ python app.py
 ## 🌐 Acesso à API
 A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-## 📡 Estrutura de Endpoints
+<!-- ## 📡 Estrutura de Endpoints
 
 - **/meals**
 
@@ -106,7 +106,7 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
     - 👤 **POST** `/api/users/add` - Criar um usuário.  
     - 🔑 **POST** `/api/users/login` - Login do usuário.  
-    - 🚪 **GET** `/api/users/logout` - Logout do usuário.  
+    - 🚪 **GET** `/api/users/logout` - Logout do usuário.   -->
 
 ## 📡 Estrutura de Endpoints
 
@@ -212,13 +212,14 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Descrição**: Consulta as refeições registradas com filtros opcionais.
 - **Método**: `GET`
 - **Endpoint**: `/api/meals`
-- **Parâmetros de consulta**:
-  - `category`: Filtro por categoria (opcional).
-  - `diet_status`: Filtro por status de dieta (opcional).
-  - `start_date`: Filtro por data inicial (opcional).
-  - `end_date`: Filtro por data final (opcional).
+- **Parâmetros de consulta (opcionais)**:
+  - `category`: Filtro por categoria (`LUNCH`, `SNACK`, `SALAD`, etc).
+  - `in_diet`: Filtro por status de dieta (`true` ou `false`).
+  - `period`: Período para filtragem (`day`, `week`, `month`).
+  - `start_date`: Data de início (formato YYYY-MM-DD).
+  - `end_date`: Data de fim (formato YYYY-MM-DD).
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals`
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals?period=day&in_diet=true`
 
 📄 **Exemplo de Resposta:**
 
@@ -315,8 +316,8 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Endpoint**: `/api/meals/report`
 - **Parâmetros de consulta (opcionais)**:
   - `period`: Período para filtragem (`day`, `week`, `month`).
-  - `start_date`: Data de início.
-  - `end_date`: Data de fim.
+  - `start_date`: Data de início (formato YYYY-MM-DD).
+  - `end_date`: Data de fim (formato YYYY-MM-DD).
 
 🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/report?period=day`
 
@@ -343,18 +344,24 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Método**: `POST`
 - **Endpoint**: `/api/water/add`
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/water/add`
 
 📝 **Corpo da Requisição:**
 
 ```json
-
+{
+  "quantity": 250
+}
 ```
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "date_time": "2024-11-15 15:53:28",
+    "message": "Water intake recorded successfully",
+    "quantity": 250.0
+}
 ```
 
 ### ❌ Remover Ingestão de Água
@@ -362,40 +369,42 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Método**: `DELETE`
 - **Endpoint**: `/api/water/delete/{water_id}`
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/delete/{water_id}`
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "message": "Water intake removed successfully"
+}
 ```
 
 ### 📅 Consultar Ingestão de Água
 - **Descrição**: Consulta os registros de ingestão de água.
 - **Método**: `GET`
 - **Endpoint**: `/api/water`
-- **Parâmetros de consulta**:
-  - `start_date`: Filtro por data inicial (opcional).
-  - `end_date`: Filtro por data final (opcional).
+- **Parâmetros de consulta (opcionais)**:
+  - `period`: Período para filtragem (`day`, `week`, `month`).
+  - `start_date`: Data de início (formato YYYY-MM-DD).
+  - `end_date`: Data de fim (formato YYYY-MM-DD).
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/water?period=day`
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+[
+    {
+        "date_time": "2024-11-15 15:54:48",
+        "id": 1,
+        "quantity": 250.0
+    },
+    {
+        "date_time": "2024-11-15 15:54:57",
+        "id": 2,
+        "quantity": 500.0
+    }
+]
 ```
 
 ### 📈 Total de Água Consumida
@@ -403,21 +412,21 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Método**: `GET`
 - **Endpoint**: `/api/water/total`
 - **Parâmetros de consulta**:
-  - `start_date`: Filtro por data inicial (opcional).
-  - `end_date`: Filtro por data final (opcional).
+  - `period`: Período para filtragem (`day`, `week`, `month`).
+  - `start_date`: Data de início (formato YYYY-MM-DD).
+  - `end_date`: Data de fim (formato YYYY-MM-DD).
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/water/total`
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "period": "day",
+    "progress": 37.5,
+    "total_water": 750.0,
+    "water_goal": 2000.0
+}
 ```
 
 ### 🎯 Atualizar Meta de Ingestão de Água
@@ -425,18 +434,22 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Método**: `POST`
 - **Endpoint**: `/api/water/goal`
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/water/goal`
 
 📝 **Corpo da Requisição:**
 
 ```json
-
+{
+  "daily_water_goal": 3000
+}
 ```
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "message": "Daily water intake goal successfully updated to 3000"
+}
 ```
 
 ---
