@@ -82,52 +82,127 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ## 📡 Estrutura de Endpoints
 
+- **/meals**
+
+    - ➕ **POST** `/api/meals/add` - Adicionar uma refeição.  
+    - ✏️ **PUT** `/api/meals/update/{meal_id}` - Atualizar uma refeição.  
+    - ❌ **DELETE** `/api/meals/delete/{meal_id}` - Excluir uma refeição.  
+    - 🔍 **GET** `/api/meals` - Consultar lista de refeições com filtros.  
+    - 📋 **GET** `/api/meals/{meal_id}` - Consultar detalhes de uma refeição específica.  
+    - ⭐ **PATCH** `/api/meals/{meal_id}/favorite` - Favoritar ou desfavoritar uma refeição.  
+    - ❤️ **GET** `/api/meals/favorites` - Consultar todas as refeições favoritas.  
+    - 📊 **GET** `/api/meals/report` - Gerar relatório de refeições consumidas.  
+    - 🎯 **PUT** `/api/meals/report/goal` - Atualizar meta diária de calorias.  
+
+- **/water**
+
+    - ➕ **POST** `/api/water/add` - Adicionar ingestão de água.  
+    - ❌ **DELETE** `/api/water/delete/{water_id}` - Excluir ingestão de água.  
+    - 🔍 **GET** `/api/water` - Consultar ingestões de água.  
+    - 💧 **GET** `/api/water/total` - Consultar total de água consumida.  
+    - 🎯 **POST** `/api/water/goal` - Atualizar meta diária de água.
+
+- **/users**
+
+    - 👤 **POST** `/api/users/add` - Criar um usuário.  
+    - 🔑 **POST** `/api/users/login` - Login do usuário.  
+    - 🚪 **GET** `/api/users/logout` - Logout do usuário.  
+
+## 📡 Estrutura de Endpoints
+
 ### 🍴 Refeições
-- **Adicionar**: `POST /api/meals/add` - Adiciona uma refeição.
-- **Atualizar**: `PUT /api/meals/update/{meal_id}>` - Atualiza uma refeição.
-- **Excluir**: `DELETE /api/meals/delete/{meal_id}` - Exclui uma refeição.
-- **Consultar**: `GET /api/meals` - Lista refeições com filtros.
-- **Consultar Refeição Específica**: `GET /api/meals/{meal_id}` - Detalha uma refeição específica.
-- **Favoritar**: `PATCH /api/meals/{meal_id}/favorite` - Marca ou desmarca uma refeição como favorita.
-- **Refeições Favoritas**: `GET /api/meals/favorites` - Lista todas as refeições favoritas.
-- **Relatório de Refeições**: `GET /api/meals/report` - Geração de relatório com informações sobre refeições consumidas no período selecionado (dia, semana ou mês).
-- **Atualizar Meta de Calorias**: `PUT /api/meals/report/goal` - Atualiza a meta diária de calorias.
+- **➕ Adicionar**: `POST /api/meals/add` - Adiciona uma refeição.  
+- **✏️ Atualizar**: `PUT /api/meals/update/{meal_id}` - Atualiza uma refeição.  
+- **❌ Excluir**: `DELETE /api/meals/delete/{meal_id}` - Exclui uma refeição.  
+- **🔍 Consultar**: `GET /api/meals` - Lista refeições com filtros.  
+- **📋 Consultar Refeição Específica**: `GET /api/meals/{meal_id}` - Detalha uma refeição específica.  
+- **⭐ Favoritar**: `PATCH /api/meals/{meal_id}/favorite` - Marca ou desmarca uma refeição como favorita.  
+- **❤️ Refeições Favoritas**: `GET /api/meals/favorites` - Lista todas as refeições favoritas.  
+- **📊 Relatório de Refeições**: `GET /api/meals/report` - Geração de relatório com informações sobre refeições consumidas.  
+- **🎯 Atualizar Meta de Calorias**: `PUT /api/meals/report/goal` - Atualiza a meta diária de calorias.  
 
 ### 💧 Ingestão de Água
-- **Adicionar**: `POST /api/water/add` - Registra ingestão de água.
-- **Remover**: `DELETE /api/water/delete/{water_id}` - Exclui ingestão de água.
-- **Consultar**: `GET /api/water` - Lista ingestões de água.
-- **Total Consumido**: `GET /api/water/total` - Consulta total de água consumida.
-- **Atualizar Meta**: `POST /api/water/goal` - Atualiza meta diária de água.
+- **➕ Adicionar**: `POST /api/water/add` - Registra ingestão de água.  
+- **❌ Remover**: `DELETE /api/water/delete/{water_id}` - Exclui ingestão de água.  
+- **🔍 Consultar**: `GET /api/water` - Lista ingestões de água.  
+- **💧 Total Consumido**: `GET /api/water/total` - Consulta total de água consumida.  
+- **🎯 Atualizar Meta**: `POST /api/water/goal` - Atualiza meta diária de água.  
+
+### 👤 Usuários
+- **👤 Criar Usuário**: `POST /api/users/add` - Criar um usuário.
+- **🔑 Login**: `POST /api/users/login` - Login do usuário.
+- **🚪 Logout**: `GET /api/users/logout` - Logout do usuário.
+
+---
 
 ## 🔗 Endpoints
+
+## 🍽️ Refeições (`/api/meals`)
 
 ### 🍴 Adicionar Refeição
 - **Descrição**: Adiciona uma nova refeição.
 - **Método**: `POST`
 - **Endpoint**: `/api/meals/add`
-- **Campos**:
-  - `name`: Nome da refeição (string).
-  - `description`: Descrição da refeição (string).
-  - `category`: Categoria da refeição (string).
-  - `calories`: Quantidade de calorias (int).
-  - `diet_status`: Status da dieta (string).
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+{
+    "name": "Grilled Chicken",
+    "description": "A protein-packed grilled chicken breast",
+    "in_diet": true,
+    "category": "LUNCH",
+    "calories": 300
+}
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "message": "Meal added successfully"
+}
+```
 
 ### ✏️ Atualizar Refeição
 - **Descrição**: Atualiza os dados de uma refeição existente.
 - **Método**: `POST`
 - **Endpoint**: `/api/meals/update/{meal_id}`
-- **Campos**:
-  - `name`: Nome da refeição (string).
-  - `description`: Descrição da refeição (string).
-  - `category`: Categoria da refeição (string).
-  - `calories`: Quantidade de calorias (int).
-  - `diet_status`: Status da dieta (string).
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
 
 ### ❌ Excluir Refeição
 - **Descrição**: Exclui uma refeição registrada.
 - **Método**: `DELETE`
 - **Endpoint**: `/api/meals/delete/{meal_id}`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
 
 ### 🔍 Consultar Refeições
 - **Descrição**: Consulta as refeições registradas com filtros opcionais.
@@ -139,10 +214,38 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
   - `start_date`: Filtro por data inicial (opcional).
   - `end_date`: Filtro por data final (opcional).
 
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
+
 ### ❤️ Favoritar Refeição
 - **Descrição**: Marca uma refeição como favorita.
 - **Método**: `POST`
 - **Endpoint**: `/api/meals/favorite/{meal_id}`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
 
 ### 📅 Filtragem de Refeições
 - **Descrição**: Filtra refeições por data (dia, semana, mês).
@@ -153,19 +256,61 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
   - `start_date`: Data de início (opcional).
   - `end_date`: Data de fim (opcional).
 
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
+
 ---
+
+## 💧 Ingestão de Água (`/api/water`)
 
 ### 💧 Adicionar Ingestão de Água
 - **Descrição**: Registra uma ingestão de água.
 - **Método**: `POST`
 - **Endpoint**: `/api/water/add`
-- **Campos**:
-  - `amount`: Quantidade de água ingerida (float).
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
 
 ### ❌ Remover Ingestão de Água
 - **Descrição**: Exclui um registro de ingestão de água.
 - **Método**: `DELETE`
 - **Endpoint**: `/api/water/delete/{water_id}`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
 
 ### 📅 Consultar Ingestão de Água
 - **Descrição**: Consulta os registros de ingestão de água.
@@ -175,6 +320,20 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
   - `start_date`: Filtro por data inicial (opcional).
   - `end_date`: Filtro por data final (opcional).
 
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
+
 ### 📈 Total de Água Consumida
 - **Descrição**: Obtém o total de água consumida em um período específico.
 - **Método**: `GET`
@@ -183,12 +342,38 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
   - `start_date`: Filtro por data inicial (opcional).
   - `end_date`: Filtro por data final (opcional).
 
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
+
 ### 🎯 Atualizar Meta de Ingestão de Água
 - **Descrição**: Ajusta a meta diária de ingestão de água.
 - **Método**: `POST`
 - **Endpoint**: `/api/water/goal`
-- **Campos**:
-  - `goal`: Nova meta diária de ingestão de água (float).
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+
+```
 
 ## Contribuições 🌟
 
