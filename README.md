@@ -171,18 +171,26 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Método**: `POST`
 - **Endpoint**: `/api/meals/update/{meal_id}`
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/update/{meal_id}`
 
 📝 **Corpo da Requisição:**
 
 ```json
-
+{
+    "name": "Green Salad",
+    "description": "A healthy green salad",
+    "in_diet": true,
+    "category": "SALAD",
+    "calories": 150
+}
 ```
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "message": "Meal updated successfully"
+}
 ```
 
 ### ❌ Excluir Refeição
@@ -190,18 +198,14 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Método**: `DELETE`
 - **Endpoint**: `/api/meals/delete/{meal_id}`
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/delete/{meal_id}`
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "message": "Meal deleted successfully"
+}
 ```
 
 ### 🔍 Consultar Refeições
@@ -214,60 +218,120 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
   - `start_date`: Filtro por data inicial (opcional).
   - `end_date`: Filtro por data final (opcional).
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals`
 
 📄 **Exemplo de Resposta:**
 
 ```json
+[
+    {
+        "calories": 300.0,
+        "category": "LUNCH",
+        "date_time": "Fri, 15 Nov 2024 14:42:47 GMT",
+        "description": "A protein-packed grilled chicken breast",
+        "favorite": false,
+        "id": 1,
+        "in_diet": true,
+        "name": "Grilled Chicken"
+    },
+    {
+        "calories": 150.0,
+        "category": "SALAD",
+        "date_time": "Fri, 15 Nov 2024 14:42:58 GMT",
+        "description": "A healthy green salad",
+        "favorite": false,
+        "id": 2,
+        "in_diet": true,
+        "name": "Green Salad"
+    }
+]
+```
 
+### 🆔 Consultar Refeições por ID
+- **Descrição**: Consulta uma refeição especifica pelo ID.
+- **Método**: `GET`
+- **Endpoint**: `/api/meals/{meal_id}`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/{meal_id}`
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "calories": 300.0,
+    "category": "LUNCH",
+    "date_time": "Fri, 15 Nov 2024 14:42:47 GMT",
+    "description": "A protein-packed grilled chicken breast",
+    "favorite": false,
+    "id": 1,
+    "in_diet": true,
+    "name": "Grilled Chicken"
+}
 ```
 
 ### ❤️ Favoritar Refeição
-- **Descrição**: Marca uma refeição como favorita.
-- **Método**: `POST`
-- **Endpoint**: `/api/meals/favorite/{meal_id}`
+- **Descrição**: Marca ou desmarca uma refeição como favorita.
+- **Método**: `PATCH`
+- **Endpoint**: `/api/meals/{meal_id}/favorite`
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/{meal_id}/favorite`
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "favorite": true,
+    "meal_id": 1,
+    "message": "Meal favorite status updated successfully"
+}
 ```
 
-### 📅 Filtragem de Refeições
-- **Descrição**: Filtra refeições por data (dia, semana, mês).
+### ⭐ Listar Refeições Favoritas
+- **Descrição**: Lista as refeições marcadas como favorito.
+- **Método**: `PATCH`
+- **Endpoint**: `/api/meals/favorites`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/favorites`
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "favorite_meals": [
+        {
+            "calories": 300.0,
+            "date_time": "Fri, 15 Nov 2024 14:42:47 GMT",
+            "id": 1,
+            "in_diet": true,
+            "name": "Grilled Chicken"
+        }
+    ]
+}
+```
+
+### 📅 Relatório de Refeições
+- **Descrição**: Gera um relatório das refeições por data (dia, semana, mês).
 - **Método**: `GET`
-- **Endpoint**: `/api/meals/filter`
-- **Parâmetros de consulta**:
-  - `period`: Período para filtragem (dia, semana, mês).
-  - `start_date`: Data de início (opcional).
-  - `end_date`: Data de fim (opcional).
+- **Endpoint**: `/api/meals/report`
+- **Parâmetros de consulta (opcionais)**:
+  - `period`: Período para filtragem (`day`, `week`, `month`).
+  - `start_date`: Data de início.
+  - `end_date`: Data de fim.
 
-🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/add`
-
-📝 **Corpo da Requisição:**
-
-```json
-
-```
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/report?period=day`
 
 📄 **Exemplo de Resposta:**
 
 ```json
-
+{
+    "calorie_goal": 2000.0,
+    "end_date": "2024-11-15",
+    "meals_in_diet": 2,
+    "meals_out_of_diet": 0,
+    "progress": 22.5,
+    "start_date": "2024-11-15",
+    "total_calories": 450.0
+}
 ```
 
 ---
@@ -373,6 +437,75 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ```json
 
+```
+
+---
+
+## 👤 Usuários (`/api/users`)
+
+### 👤 Criar Usuário
+- **Descrição**: Cria um novo usuário.
+- **Método**: `POST`
+- **Endpoint**: `/api/users/add`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/users/add`
+
+📝 **Corpo da Requisição:**
+
+```json
+{
+    "username": "joschonarth",
+    "email": "joschonarth@gmail.com",
+    "password": "123456"
+}
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "message": "User successfully registered"
+}
+```
+
+### 🔑 Login
+- **Descrição**: Realiza o login do usuário.
+- **Método**: `POST`
+- **Endpoint**: `/api/users/login`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/users/login`
+
+📝 **Corpo da Requisição:**
+
+```json
+{
+    "email": "joschonarth@gmail.com",
+    "password": "123456"
+}
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "message": "Login successful",
+    "user_id": 1
+}
+```
+
+### 🚪 Logout
+- **Descrição**: Realiza o logout do usuário.
+- **Método**: `GET`
+- **Endpoint**: `/api/users/logout`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/users/logout`
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "message": "Logout successful"
+}
 ```
 
 ## Contribuições 🌟
