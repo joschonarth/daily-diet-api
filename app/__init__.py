@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_login import LoginManager
 from app.models.models import db, User
 from app.config import Config
+import os
 
 login_manager = LoginManager()
 
@@ -17,6 +18,10 @@ def create_app():
 
     login_manager.init_app(app)
     login_manager.login_view = 'users_bp.login'
+
+    with app.app_context():
+        if not os.path.exists('daily_diet.db'):
+            db.create_all()
 
     register_blueprints(app)
 
