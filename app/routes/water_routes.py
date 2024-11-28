@@ -151,13 +151,22 @@ def water_streak():
     for intake in daily_intakes:
         intake_date = intake.date
         if intake.total_quantity >= water_goal:
-            if previous_day is None or (previous_day - intake_date).days in [1, 0]:
+            if previous_day is None or (previous_day - datetime.strptime(intake_date, '%Y-%m-%d').date()).days in [1, 0]:
                 streak_count += 1
-                previous_day = intake_date
+                previous_day = datetime.strptime(intake_date, '%Y-%m-%d').date()
             else:
                 break
         else:
             break
+
+    current_user.water_streak_count = streak_count
+    
+    if previous_day:
+        current_user.last_water_streak_date = previous_day
+    else:
+        current_user.last_water_streak_date = None
+
+    db.session.commit()
 
     return jsonify({
         "streak": streak_count
