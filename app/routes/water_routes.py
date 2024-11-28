@@ -45,6 +45,7 @@ def add_water_intake():
     
     return jsonify({
         "message": "Water intake recorded successfully",
+        "id": water_intake.id,
         "quantity": water_intake.quantity,
         "date_time": water_intake.date_time.strftime('%Y-%m-%d %H:%M:%S')
     }), 201
