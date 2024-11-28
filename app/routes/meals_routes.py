@@ -193,3 +193,17 @@ def get_favorite_meals():
     } for meal in favorite_meals]
     
     return jsonify({"favorite_meals": meals_list})
+
+@meals_bp.route('/api/meals/calorie-goal', methods=['PUT'])
+@login_required
+def update_calorie_goal():
+    data = request.get_json()
+    new_goal = data.get('daily_calorie_goal')
+
+    if not new_goal or not isinstance(new_goal, (int, float)) or new_goal <= 0:
+        return jsonify({"message": "Invalid calorie goal. It must be a positive number"}), 400
+
+    current_user.daily_calorie_goal = new_goal
+    db.session.commit()
+ 
+    return jsonify({"message": f"Daily calorie goal successfully updated to {new_goal}"}), 200
