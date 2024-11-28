@@ -3,6 +3,7 @@ from app.models.models import db, Water
 from datetime import datetime, timedelta
 from calendar import monthrange
 from flask_login import login_required, current_user
+from sqlalchemy import func
 
 water_bp = Blueprint('water_bp', __name__)
 
@@ -126,3 +127,37 @@ def update_water_goal():
     db.session.commit()
 
     return jsonify({"message": f"Daily water intake goal successfully updated to {new_goal}"}), 200
+
+@water_bp.route('/api/water/streak', methods=['GET'])
+@login_required
+def water_streak():
+    water_goal = current_user.daily_water_goal
+
+    daily_intakes = db.session.query(
+        func.date(Water.date_time).label('date'),
+        func.sum(Water.quantity).label('total_quantity')
+    ).filter(
+        Water.user_id == current_user.id
+    ).group_by(
+        func.date(Water.date_time)
+    ).order_by(
+        func.date(Water.date_time).desc()
+    ).all()
+
+    streak_count = 0
+    previous_day = None
+
+    for intake in daily_intakes:
+        intake_date = intake.date
+        if intake.total_quantity >= water_goal:
+            if previous_day is None or (previous_day - intake_date).days in [1, 0]:
+                streak_count += 1
+                previous_day = intake_date
+            else:
+                break
+        else:
+            break
+
+    return jsonify({
+        "streak": streak_count
+    })
