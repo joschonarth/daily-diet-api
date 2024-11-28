@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.models import db, Meal, MealCategory
 from datetime import datetime, timedelta
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from flask_login import login_required, current_user
 
 meals_bp = Blueprint('meals_bp', __name__)
@@ -207,3 +207,46 @@ def update_calorie_goal():
     db.session.commit()
  
     return jsonify({"message": f"Daily calorie goal successfully updated to {new_goal}"}), 200
+
+@meals_bp.route('/api/meals/calorie-goal/streak', methods=['GET'])
+@login_required
+def calorie_streak():
+    calorie_goal = current_user.daily_calorie_goal
+
+    daily_meals = db.session.query(
+        func.date(Meal.date_time).label('date'),
+        func.sum(Meal.calories).label('total_calories')
+    ).filter(
+        Meal.user_id == current_user.id
+    ).group_by(
+        func.date(Meal.date_time)
+    ).order_by(
+        func.date(Meal.date_time).desc()
+    ).all()
+
+    streak_count = 0
+    previous_day = None
+
+    for meal in daily_meals:
+        meal_date = meal.date
+        if meal.total_calories >= calorie_goal:
+            if previous_day is None or (previous_day - datetime.strptime(meal_date, '%Y-%m-%d').date()).days in [1, 0]:
+                streak_count += 1
+                previous_day = datetime.strptime(meal_date, '%Y-%m-%d').date()
+            else:
+                break
+        else:
+            break
+
+    current_user.calorie_streak_count = streak_count
+
+    if previous_day:
+        current_user.last_calorie_streak_date = previous_day
+    else:
+        current_user.last_calorie_streak_date = None
+
+    db.session.commit()
+
+    return jsonify({
+        "streak": streak_count
+    })

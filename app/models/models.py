@@ -28,6 +28,9 @@ class User(db.Model, UserMixin):
     daily_calorie_goal = db.Column(db.Float, nullable=False, default=Goals.DAILY_CALORIE_GOAL)
     daily_water_goal = db.Column(db.Float, nullable=False, default=Goals.DAILY_WATER_GOAL)
 
+    calorie_streak_count = db.Column(db.Integer, nullable=False, default=0)
+    last_calorie_streak_date = db.Column(db.Date, nullable=True)
+
     water_streak_count = db.Column(db.Integer, nullable=False, default=0)
     last_water_streak_date = db.Column(db.Date, nullable=True)
 
