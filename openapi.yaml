@@ -5,11 +5,11 @@ info:
   version: 1.0.0
 tags:
   - name: meals
-    description: Endpoints for managing meals, logging calorie intake, and meal preferences.
+    description: Endpoints for managing meals.
   - name: water
-    description: Endpoints for tracking water intake and monitoring hydration goals.
+    description: Endpoints for tracking water intake.
   - name: users
-    description: Endpoints for managing user authentication, creation, and logout.
+    description: Endpoints for managing user information.
 paths:
   /api/meals/add:
     post:

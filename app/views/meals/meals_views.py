@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from app.models.models import db, Meal, MealCategory
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from sqlalchemy import and_, func
 from flask_login import current_user
 
