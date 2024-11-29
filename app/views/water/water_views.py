@@ -38,6 +38,8 @@ def add_water_intake(data):
     
     db.session.add(water_intake)
     db.session.commit()
+
+    calculate_water_streak(current_user)
     
     return jsonify({
         "message": "Water intake recorded successfully",
@@ -117,14 +119,14 @@ def update_water_goal():
 
     return jsonify({"message": f"Daily water intake goal successfully updated to {new_goal}"}), 200
 
-def water_streak():
-    water_goal = current_user.daily_water_goal
+def calculate_water_streak(user):
+    water_goal = user.daily_water_goal
 
     daily_intakes = db.session.query(
         func.date(Water.date_time).label('date'),
         func.sum(Water.quantity).label('total_quantity')
     ).filter(
-        Water.user_id == current_user.id
+        Water.user_id == user.id
     ).group_by(
         func.date(Water.date_time)
     ).order_by(
@@ -145,15 +147,16 @@ def water_streak():
         else:
             break
 
-    current_user.water_streak_count = streak_count
+    user.water_streak_count = streak_count
     
     if previous_day:
-        current_user.last_water_streak_date = previous_day
+        user.last_water_streak_date = previous_day
     else:
-        current_user.last_water_streak_date = None
+        user.last_water_streak_date = None
 
     db.session.commit()
+    return streak_count
 
-    return jsonify({
-        "streak": streak_count
-    })
+def water_streak():
+    streak_count = calculate_water_streak(current_user)
+    return jsonify({"streak": streak_count})
