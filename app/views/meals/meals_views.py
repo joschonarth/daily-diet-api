@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from app.models.models import db, Meal, MealCategory
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from sqlalchemy import and_, func
 from flask_login import current_user
 
@@ -19,9 +19,17 @@ def add_meal(data):
             calories = data.get("calories", None),
             user_id=current_user.id
         )
+        
         db.session.add(meal)
         db.session.commit()
-        return jsonify({"message": "Meal added successfully"}), 201
+
+        calculate_calorie_streak(current_user)
+
+        return jsonify({
+            "message": "Meal added successfully",
+            "meal_id": meal.id
+        }), 201
+    
     return jsonify({"message": "Invalid meal data"}), 400
 
 def update_meal(meal_id, data):
@@ -190,14 +198,14 @@ def update_calorie_goal():
  
     return jsonify({"message": f"Daily calorie goal successfully updated to {new_goal}"}), 200
 
-def calorie_streak():
-    calorie_goal = current_user.daily_calorie_goal
+def calculate_calorie_streak(user):
+    calorie_goal = user.daily_calorie_goal
 
     daily_meals = db.session.query(
         func.date(Meal.date_time).label('date'),
         func.sum(Meal.calories).label('total_calories')
     ).filter(
-        Meal.user_id == current_user.id
+        Meal.user_id == user.id
     ).group_by(
         func.date(Meal.date_time)
     ).order_by(
@@ -209,24 +217,25 @@ def calorie_streak():
 
     for meal in daily_meals:
         meal_date = meal.date
+        
+        if isinstance(meal_date, str):
+            meal_date = datetime.strptime(meal_date, "%Y-%m-%d").date()
+        
         if meal.total_calories >= calorie_goal:
-            if previous_day is None or (previous_day - datetime.strptime(meal_date, '%Y-%m-%d').date()).days in [1, 0]:
+            if previous_day is None or (previous_day - meal_date).days in [1, 0]:
                 streak_count += 1
-                previous_day = datetime.strptime(meal_date, '%Y-%m-%d').date()
+                previous_day = meal_date
             else:
                 break
         else:
             break
 
-    current_user.calorie_streak_count = streak_count
-
-    if previous_day:
-        current_user.last_calorie_streak_date = previous_day
-    else:
-        current_user.last_calorie_streak_date = None
+    user.calorie_streak_count = streak_count
+    user.last_calorie_streak_date = previous_day
 
     db.session.commit()
+    return streak_count
 
-    return jsonify({
-        "streak": streak_count
-    })
+def calorie_streak():
+    streak_count = calculate_calorie_streak(current_user)
+    return jsonify({"streak": streak_count})
