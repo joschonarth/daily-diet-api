@@ -14,6 +14,7 @@ A Daily Diet API é uma solução completa para o controle de hábitos alimentar
 - 📅 **Filtragem de Refeições**: Filtros por data (dia, semana, mês) ou intervalo de datas personalizadas.
 - 📊 **Relatório de Refeições**: Geração de relatórios sobre as refeições registradas, com a possibilidade de filtrar por períodos (dia, semana, mês) e incluir informações como calorias totais e metas de consumo de calorias.
 - 🎯 **Atualizar Meta de Calorias**: Atualização da meta diária de calorias com base no objetivo nutricional do usuário.
+- 🔥 **Streak de Calorias**: Acompanhamento do número de dias consecutivos em que a meta de calorias foi atingida.
 
 ### 💧 Ingestão de Água
 
@@ -22,7 +23,7 @@ A Daily Diet API é uma solução completa para o controle de hábitos alimentar
 - 📅 **Consultar Ingestão de Água**: Consultar ingestões de água com filtros de dia, semana e mês.
 - 📈 **Total de Água Consumida**: Obter o total de água consumida em um período, com progresso em relação à meta.
 - 🎯 **Atualizar Meta de Ingestão de Água**: Ajustar a meta diária de ingestão de água.
-
+- 🔥 **Streak de Ingestão de Água**: Acompanhamento do número de dias consecutivos em que a meta de ingestão de água foi alcançada.
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -119,14 +120,16 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **⭐ Favoritar**: `PATCH /api/meals/{meal_id}/favorite` - Marca ou desmarca uma refeição como favorita.  
 - **❤️ Refeições Favoritas**: `GET /api/meals/favorites` - Lista todas as refeições favoritas.  
 - **📊 Relatório de Refeições**: `GET /api/meals/report` - Geração de relatório com informações sobre refeições consumidas.  
-- **🎯 Atualizar Meta de Calorias**: `PUT /api/meals/report/goal` - Atualiza a meta diária de calorias.  
+- **🎯 Atualizar Meta de Calorias**: `PUT /api/meals/calorie-goal` - Atualiza a meta diária de calorias.  
+- **🔥 Streak de Calorias**: `GET /api/meals/calorie-goal/streak` - Consulta o streak de dias consecutivos atingindo a meta de calorias.
 
 ### 💧 Ingestão de Água
 - **➕ Adicionar**: `POST /api/water/add` - Registra ingestão de água.  
 - **❌ Remover**: `DELETE /api/water/delete/{water_id}` - Exclui ingestão de água.  
 - **🔍 Consultar**: `GET /api/water` - Lista ingestões de água.  
 - **💧 Total Consumido**: `GET /api/water/total` - Consulta total de água consumida.  
-- **🎯 Atualizar Meta**: `POST /api/water/goal` - Atualiza meta diária de água.  
+- **🎯 Atualizar Meta**: `POST /api/water/goal` - Atualiza meta diária de água.
+- **🔥 Streak de Ingestão de Água**: `GET /api/water/streak` - Consulta o streak de dias consecutivos atingindo a meta de ingestão de água.
 
 ### 👤 Usuários
 - **👤 Criar Usuário**: `POST /api/users/add` - Criar um usuário.
@@ -335,6 +338,45 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 }
 ```
 
+
+### 🎯 Atualizar Meta de Calorias
+- **Descrição**: Ajusta a meta diária de calorias.
+- **Método**: `POST`
+- **Endpoint**: `/api/meals/calorie-goal`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/calorie-goal`
+
+📝 **Corpo da Requisição:**
+
+```json
+{
+  "daily_calorie_goal": 3000
+}
+```
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "message": "Daily calorie goal successfully updated to 3000"
+}
+```
+
+### 🔥 Streak de Calorias
+- **Descrição**: Calcula e exibe a sequência de dias em que o usuário atingiu sua meta diária de calorias.
+- **Método**: `GET`
+- **Endpoint**: `/api/meals/calorie-goal/streak`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/meals/calorie-goal/streak`
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "streak": 10
+}
+```
+
 ---
 
 ## 💧 Ingestão de Água (`/api/water`)
@@ -449,6 +491,21 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 ```json
 {
     "message": "Daily water intake goal successfully updated to 3000"
+}
+```
+
+### 🔥 Streak de Ingestão de Água
+- **Descrição**: Calcula e exibe a sequência de dias em que o usuário atingiu sua meta diária de ingestão de água.
+- **Método**: `GET`
+- **Endpoint**: `/api/water/streak`
+
+🌐 **Exemplo de Requisição**: `http://localhost:5000/api/water/streak`
+
+📄 **Exemplo de Resposta:**
+
+```json
+{
+    "streak": 10
 }
 ```
 
