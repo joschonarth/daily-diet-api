@@ -1,6 +1,7 @@
 from flask import Blueprint, request
 from flask_login import login_required
 from app.views.meals.meals_views import add_meal, update_meal, delete_meal, get_meals, get_meal, toggle_favorite, get_favorite_meals, update_calorie_goal, calorie_streak
+from app.views.meals.meals_report_views import generate_report
 
 meals_bp = Blueprint('meals_bp', __name__)
 
@@ -48,3 +49,8 @@ def update_calorie_goal_route():
 @login_required
 def calorie_streak_route():
     return calorie_streak()
+
+@meals_bp.route('/api/meals/report', methods=['GET'])
+@login_required
+def generate_report_route():
+    return generate_report()

@@ -39,9 +39,6 @@ def register_blueprints(app):
     from app.routes.meals_routes import meals_bp
     app.register_blueprint(meals_bp)
 
-    from app.routes.meals_report_routes import meals_report_bp
-    app.register_blueprint(meals_report_bp)
-
     from app.routes.water_routes import water_bp
     app.register_blueprint(water_bp)
 

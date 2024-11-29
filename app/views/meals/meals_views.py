@@ -1,8 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from app.models.models import db, Meal, MealCategory
 from datetime import datetime, timedelta
 from sqlalchemy import and_, func
-from flask_login import login_required, current_user
+from flask_login import current_user
 
 def add_meal(data):
     data = request.json

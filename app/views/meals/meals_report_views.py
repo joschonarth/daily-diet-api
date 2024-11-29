@@ -1,13 +1,9 @@
-from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
+from flask import jsonify, request
+from flask_login import current_user
 from datetime import datetime, timedelta
-from app.models.models import db, Meal
+from app.models.models import Meal
 from calendar import monthrange
 
-meals_report_bp = Blueprint('meals_report', __name__)
-
-@meals_report_bp.route('/api/meals/report', methods=['GET'])
-@login_required
 def generate_report():      
     today  = datetime.now()
     
