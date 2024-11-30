@@ -1,8 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum, func, ForeignKey
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import relationship
 import enum
 from flask_login import UserMixin
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+
 
 db = SQLAlchemy()
 
@@ -19,7 +22,7 @@ class Goals():
     DAILY_WATER_GOAL = 2000
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(80), nullable=False)

@@ -2,6 +2,7 @@ from flask import request, jsonify
 from app.models.models import db, User
 import bcrypt
 from flask_login import login_user, current_user
+import uuid
 
 def create_user(data):
     data = request.json
@@ -15,10 +16,21 @@ def create_user(data):
             return jsonify({"message": "Email already exists"}), 409
 
         hashed_password = bcrypt.hashpw(str.encode(password), bcrypt.gensalt())
-        user = User(username=username, email=email, password=hashed_password)
+
+        user = User(
+            id=uuid.uuid4(),
+            username=username, 
+            email=email, 
+            password=hashed_password
+        )
+
         db.session.add(user)
         db.session.commit()
-        return jsonify({"message": "User successfully registered"})
+
+        return jsonify({
+            "message": "User successfully registered",
+            "user_id": str(user.id)
+        }), 201
     
     return jsonify({"message": "Invalid credentials"}), 400
 
