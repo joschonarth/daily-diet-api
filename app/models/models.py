@@ -46,10 +46,10 @@ class Meal(db.Model):
     category = db.Column(Enum(MealCategory), nullable=True)
     calories = db.Column(db.Float, nullable=True)
     favorite = db.Column(db.Boolean, default=False)
-    user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id'), nullable=False)
 
 class Water(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     quantity = db.Column(db.Float, nullable=False)
     date_time = db.Column(db.DateTime, nullable=False, default=func.now())
-    user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(UUID(as_uuid=True), ForeignKey('user.id'), nullable=False)

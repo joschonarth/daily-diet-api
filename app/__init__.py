@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from app.models.models import db, User
 from app.config import Config
 import os
+import uuid
 
 login_manager = LoginManager()
 
@@ -29,7 +30,7 @@ def create_app():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(uuid.UUID(user_id))
 
 @login_manager.unauthorized_handler
 def unauthorized():
