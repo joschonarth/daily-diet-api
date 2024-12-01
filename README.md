@@ -534,7 +534,8 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ```json
 {
-    "message": "User successfully registered"
+    "message": "User successfully registered",
+    "user_id": "25f541d4-3f8d-45ca-9fb2-fdb7d78ff001"
 }
 ```
 
@@ -559,7 +560,7 @@ A API estará disponível em: [http://127.0.0.1:5000](http://127.0.0.1:5000)
 ```json
 {
     "message": "Login successful",
-    "user_id": 1
+    "user_id": "25f541d4-3f8d-45ca-9fb2-fdb7d78ff001"
 }
 ```
 
